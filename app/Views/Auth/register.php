@@ -36,7 +36,7 @@
 
                 <div class="mb-2">
                     <label class="form-label small" style="color: #000000ff;">Email</label>
-                    <input type="email" name="email" class="form-control form-control-sm" placeholder="Enter your email" value="<?= set_value('email') ?>" required>
+                    <input type="email" name="email" class="form-control form-control-sm" placeholder="Enter your email" value="<?= set_value('email') ?>" >
                 </div>
 
                 <div class="mb-2">

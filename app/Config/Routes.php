@@ -30,3 +30,7 @@ use CodeIgniter\Router\RouteCollection;
         $routes->post('courses/enroll', 'Course::enroll');
         $routes->get('/studentCourse', 'Auth::studentCourse');
 
+        // User Management
+        $routes->post('admin/registerUser', 'AdminController::registerUser');
+
+
