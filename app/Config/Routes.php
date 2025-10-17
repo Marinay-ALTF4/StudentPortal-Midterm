@@ -32,6 +32,13 @@ use CodeIgniter\Router\RouteCollection;
 
         // User Management
         $routes->post('admin/postAnnouncement', 'AdminController::postAnnouncement');
-
+        $routes->group('admin', ['filter' => 'roleauth'], function($routes) {
+            $routes->get('dashboard', 'Admin::dashboard');
+        });
+        
+        $routes->group('teacher', ['filter' => 'roleauth'], function($routes) {
+            $routes->get('dashboard', 'Teacher::dashboard');
+        });
+        
 
 
