@@ -40,5 +40,7 @@ use CodeIgniter\Router\RouteCollection;
             $routes->get('dashboard', 'Teacher::dashboard');
         });
         
-
+        $routes->get('/dashboard', 'Auth::dashboard', ['filter' => 'roleauth']);
+        $routes->post('/admin/postAnnouncement', 'Auth::postAnnouncement', ['filter' => 'roleauth']);
+        
 

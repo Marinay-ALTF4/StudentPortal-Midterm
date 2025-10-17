@@ -4,43 +4,40 @@ namespace App\Controllers;
 
 use App\Models\UserModel; 
 use App\Models\EnrollmentModel;
+use App\Models\AnnouncementModel;
 use CodeIgniter\Controller;
 
 class Auth extends Controller
 {
-
     public function register()
     {
-            helper(['form']);
+        helper(['form']);
 
-            if ($this->request->getMethod() === 'POST') {
-                $rules = [
-                     'name'              => 'required|min_length[3]',
-                     'email'             => 'required|valid_email|is_unique[users.email]',
-                     'password'          => 'required|min_length[6]',
-                     'password_confirm'  => 'matches[password]'
-                ];
+        if ($this->request->getMethod() === 'POST') {
+            $rules = [
+                 'name'              => 'required|min_length[3]',
+                 'email'             => 'required|valid_email|is_unique[users.email]',
+                 'password'          => 'required|min_length[6]',
+                 'password_confirm'  => 'matches[password]'
+            ];
 
-                if ($this->validate($rules)) {
-                    $userModel = new UserModel();
-                    $userModel->save([
-                        'name'     => $this->request->getVar('name'),
-                        'email'    => $this->request->getVar('email'),
-                        'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
-                        'role'     => 'student' // Default role sa register
-                    ]);
+            if ($this->validate($rules)) {
+                $userModel = new UserModel();
+                $userModel->save([
+                    'name'     => $this->request->getVar('name'),
+                    'email'    => $this->request->getVar('email'),
+                    'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+                    'role'     => 'student' // Default role
+                ]);
 
-                    return redirect()->to('/login')->with('success', 'Registration Success. Proceed to login.');
-                } else {
-                    return view('auth/register', ['validation' => $this->validator]);
-                }
+                return redirect()->to('/login')->with('success', 'Registration Success. Proceed to login.');
+            } else {
+                return view('auth/register', ['validation' => $this->validator]);
             }
+        }
 
-            return view('auth/register');
+        return view('auth/register');
     }
-
-
-
 
     public function login()
     {
@@ -79,85 +76,114 @@ class Auth extends Controller
         return view('auth/login');
     }
 
-
-
-
     public function logout()
     {
         session()->destroy();
         return redirect()->to('login');
     }
 
+    // ---------------- Dashboard with Announcements ----------------
+    public function dashboard()
+    {
+        $session = session();
 
+        if (! $session->get('isLoggedIn')) {
+            return redirect()->to(base_url('login'))->with('login_error', 'Please log in first.');
+        }
 
+        $role = strtolower((string) $session->get('role'));
+        $userModel = new UserModel();
+        $announcementModel = new AnnouncementModel();
+        $data = [];
 
-  public function dashboard()
-{
-    $session = session();
+        // Fetch announcements ordered by newest first
+        $announcements = $announcementModel->orderBy('created_at', 'DESC')->findAll();
 
-    if (! $session->get('isLoggedIn')) {
-        return redirect()->to(base_url('login'))->with('login_error', 'Please log in first.');
+        switch ($role) {
+            case 'admin':
+                $data['usersCount']   = $userModel->countAllResults();
+                $data['recentUsers']  = $userModel->orderBy('id', 'DESC')->limit(5)->findAll();
+                break;
+
+            case 'teacher':
+                $data['students']     = $userModel->where('role', 'student')->findAll();
+                break;
+
+            case 'student':
+            default:
+                $data['profile']      = $userModel->find((int) $session->get('userID'));
+                break;
+        }
+
+        return view('auth/dashboard', [
+            'role'          => $role,
+            'data'          => $data,
+            'announcements' => $announcements
+        ]);
     }
 
-    $role = strtolower((string) $session->get('role'));
+    // ---------------- Post Announcement (Admin Only) ----------------
+    public function postAnnouncement()
+    {
+        $session = session();
+        $role = strtolower((string) $session->get('role'));
 
-    $userModel = new UserModel();
-    $data = [];
+        if ($role !== 'admin') {
+            return redirect()->to(base_url('dashboard'))->with('error', 'Access denied.');
+        }
 
-    switch ($role) {
-        case 'admin':
-            $data['usersCount'] = $userModel->countAllResults();
-            $data['recentUsers'] = $userModel
-                ->orderBy('id', 'DESC')
-                ->limit(5)
-                ->find();
-            break;
-        case 'teacher':
-            $data['students'] = $userModel->where('role', 'student')->findAll();
-            break;
-        case 'student':
-        default:
-            $data['profile'] = $userModel->find((int) $session->get('userID'));
-            break;
+        if ($this->request->getMethod() === 'post') {
+            $rules = [
+                'title'    => 'required|min_length[3]',
+                'content'  => 'required|min_length[5]',
+                'audience' => 'required|in_list[student,teacher]'
+            ];
+
+            if (!$this->validate($rules)) {
+                return redirect()->back()->withInput()->with('error', 'Please fill all fields correctly.');
+            }
+
+            $announcementModel = new AnnouncementModel();
+            $announcementModel->save([
+                'title'      => $this->request->getPost('title'),
+                'content'    => $this->request->getPost('content'),
+                'audience'   => $this->request->getPost('audience'),
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+
+            return redirect()->to(base_url('dashboard'))->with('success', 'Announcement posted successfully!');
+        }
+
+        return redirect()->back();
     }
 
-    return view('auth/dashboard', [
-        'role' => $role,
-        'data' => $data,
-    ]); 
-}
+    // ---------------- Student Courses ----------------
+    public function studentCourse()
+    {
+        $session = session();
 
-public function studentCourse()
-{
-    $session = session();
+        if (! $session->get('isLoggedIn')) {
+            return redirect()->to(base_url('login'))->with('login_error', 'Please log in first.');
+        }
 
-    if (! $session->get('isLoggedIn')) {
-        return redirect()->to(base_url('login'))->with('login_error', 'Please log in first.');
+        $role = strtolower((string) $session->get('role'));
+
+        if ($role !== 'student') {
+            return redirect()->to(base_url('dashboard'))->with('error', 'Access denied.');
+        }
+
+        $enrollmentModel = new EnrollmentModel();
+        $enrolled = $enrollmentModel->getUserEnrollments((int) $session->get('userID'));
+        $available = $enrollmentModel->getAvailableCoursesForUser((int) $session->get('userID'));
+
+        $data = [
+            'enrolledCourses'  => $enrolled,
+            'availableCourses' => $available
+        ];
+
+        return view('auth/studentCourse', [
+            'role' => $role,
+            'data' => $data
+        ]);
     }
-
-    $role = strtolower((string) $session->get('role'));
-
-    // Only students can access My Courses
-    if ($role !== 'student') {
-        return redirect()->to(base_url('dashboard'))->with('error', 'Access denied.');
-    }
-
-    $userModel = new UserModel();
-    $enrollmentModel = new EnrollmentModel();
-
-    // Load courses for "My Courses" sections
-    $enrolled = $enrollmentModel->getUserEnrollments((int) $session->get('userID'));
-    $available = $enrollmentModel->getAvailableCoursesForUser((int) $session->get('userID'));
-
-    $data = [
-        'enrolledCourses' => $enrolled,
-        'availableCourses' => $available,
-    ];
-
-    return view('auth/studentCourse', [
-        'role' => $role,
-        'data' => $data,
-    ]);
-}
-
 }
