@@ -1,26 +1,25 @@
 <?php
-
 namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
+use App\Models\AnnouncementModel;
 
 class AnnouncementSeeder extends Seeder
 {
     public function run()
     {
-        $data = [
-            [
-                'title' => 'Welcome to the Portal',
-                'content' => 'This is your online student portal. Stay updated!',
-                'created_at' => date('Y-m-d H:i:s')
-            ],
-            [
-                'title' => 'Midterm Exams Schedule',
-                'content' => 'Midterm exams will begin next week.',
-                'created_at' => date('Y-m-d H:i:s')
-            ]
-        ];
+        $annModel = new AnnouncementModel();
 
-        $this->db->table('announcements')->insertBatch($data);
+        $annModel->insert([
+            'title' => 'Welcome to Student Portal',
+            'content' => 'Portal is now live. Check for updates.',
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        $annModel->insert([
+            'title' => 'System Maintenance',
+            'content' => 'Portal will be down tonight 10 PM - 12 AM.',
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 }

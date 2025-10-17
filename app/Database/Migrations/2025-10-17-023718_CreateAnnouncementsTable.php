@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
@@ -11,28 +10,21 @@ class CreateAnnouncementsTable extends Migration
         $this->forge->addField([
             'id' => [
                 'type'           => 'INT',
-                'constraint'     => 11,
                 'unsigned'       => true,
-                'auto_increment' => true,
+                'auto_increment' => true
             ],
             'title' => [
                 'type'       => 'VARCHAR',
-                'constraint' => '255',
+                'constraint' => 255
             ],
             'content' => [
-                'type' => 'TEXT',
-            ],
-            'audience' => [
-                'type'       => 'VARCHAR',
-                'constraint' => '20', // only student or teacher
-                'null'       => false,
+                'type' => 'TEXT'
             ],
             'created_at' => [
                 'type' => 'DATETIME',
-                'null' => true,
-            ],
+                'null' => true
+            ]
         ]);
-
         $this->forge->addKey('id', true);
         $this->forge->createTable('announcements');
     }

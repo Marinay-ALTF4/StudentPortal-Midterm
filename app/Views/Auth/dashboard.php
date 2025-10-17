@@ -33,14 +33,14 @@
 
         <?php if (($role ?? '') === 'admin'): ?>
 
-          <!-- ✅ FLASH MESSAGES -->
+          <!-- FLASH MESSAGES -->
           <?php if(session()->getFlashdata('success')): ?>
             <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
           <?php elseif(session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
           <?php endif; ?>
 
-          <!-- ✅ ADMIN OVERVIEW -->
+          <!-- ADMIN OVERVIEW -->
           <h5 class="mb-3 text-dark">Admin Overview</h5>
           <p class="text-dark mb-2">
             Total users:
@@ -49,9 +49,8 @@
 
           <hr>
 
-          <!-- ✅ USER MANAGEMENT -->
+          <!-- USER MANAGEMENT FORM -->
           <h5 class="mb-3 text-dark">User Management</h5>
-
           <form action="<?= base_url('admin/registerUser') ?>" method="post" class="mb-4 border p-3 rounded bg-white">
             <div class="row g-3">
               <div class="col-md-4">
@@ -78,21 +77,18 @@
             <button type="submit" class="btn btn-success mt-3">Register User</button>
           </form>
 
-          <!-- ✅ POST ANNOUNCEMENT -->
+          <!-- POST ANNOUNCEMENT -->
           <hr>
           <h5 class="mb-3 text-dark">Post Announcement</h5>
-
           <form action="<?= base_url('admin/postAnnouncement') ?>" method="post" class="mb-4 border p-3 rounded bg-white">
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
               <input type="text" name="title" id="title" class="form-control" placeholder="Enter announcement title" required>
             </div>
-
             <div class="mb-3">
               <label for="content" class="form-label">Content</label>
               <textarea name="content" id="content" rows="3" class="form-control" placeholder="Write announcement details..." required></textarea>
             </div>
-
             <div class="mb-3">
               <label for="audience" class="form-label">Audience</label>
               <select name="audience" id="audience" class="form-select" required>
@@ -101,11 +97,10 @@
                 <option value="student">Students</option>
               </select>
             </div>
-
             <button type="submit" class="btn btn-primary">Post Announcement</button>
           </form>
 
-          <!-- ✅ RECENT USERS TABLE -->
+          <!-- RECENT USERS TABLE -->
           <h5 class="mb-3 text-dark">Recent Users</h5>
           <?php if (!empty($data['recentUsers'])): ?>
             <div class="table-responsive">
@@ -131,10 +126,25 @@
             <p class="text-dark">No recent users found.</p>
           <?php endif; ?>
 
-
         <?php elseif (($role ?? '') === 'teacher'): ?>
 
-          <!-- ✅ TEACHER DASHBOARD -->
+          <!-- TEACHER DASHBOARD -->
+
+          <!-- DYNAMIC ANNOUNCEMENTS -->
+          <?php if (!empty($announcements)): ?>
+            <h5 class="mb-3 text-dark">Announcements from Admin</h5>
+            <ul class="list-group mb-4">
+              <?php foreach ($announcements as $a): ?>
+                <?php if ($a['audience'] !== 'teacher') continue; ?>
+                <li class="list-group-item mb-2">
+                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
+                  <p><?= esc($a['content']) ?></p>
+                  <small class="text-muted">Posted on: <?= date('Y-m-d', strtotime($a['created_at'])) ?></small>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+
           <h5 class="mb-3 text-dark">My Students</h5>
           <?php if (!empty($data['students'])): ?>
             <ul class="list-group mb-4">
@@ -149,7 +159,7 @@
             <p class="text-dark">No students to display.</p>
           <?php endif; ?>
 
-          <!-- ✅ TEACHER ANNOUNCEMENTS -->
+          <!-- EXISTING HARD-CODED TEACHER ANNOUNCEMENTS BELOW -->
           <h5 class="mb-3 text-dark">Faculty Announcements</h5>
           <ul class="list-group mb-4">
             <li class="list-group-item mb-2">
@@ -157,13 +167,11 @@
               <p>All teachers are required to attend the faculty meeting on October 18 at 3 PM in the main conference room.</p>
               <small class="text-muted">Posted on: 2025-10-16</small>
             </li>
-
             <li class="list-group-item mb-2">
               <h6 class="fw-bold">Grade Submission Notice</h6>
               <p>Please submit your students’ midterm grades before October 25 through the faculty portal.</p>
               <small class="text-muted">Posted on: 2025-10-15</small>
             </li>
-
             <li class="list-group-item mb-2">
               <h6 class="fw-bold">Teaching Evaluation Schedule</h6>
               <p>Teacher evaluation forms will be available next week. Please remind your students to complete them.</p>
@@ -171,10 +179,28 @@
             </li>
           </ul>
 
-
         <?php else: ?>
 
-          <!-- ✅ STUDENT DASHBOARD -->
+          <!-- STUDENT DASHBOARD -->
+
+          <!-- DYNAMIC ANNOUNCEMENTS -->
+          <?php if (!empty($announcements)): ?>
+            <h5 class="mb-3 text-dark">Announcements from Admin</h5>
+            <ul class="list-group mb-4">
+              <?php foreach ($announcements as $a): ?>
+                <?php if ($a['audience'] !== 'student') continue; ?>
+                <li class="list-group-item mb-2">
+                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
+                  <p><?= esc($a['content']) ?></p>
+                  <small class="text-muted">Posted on: <?= date('Y-m-d', strtotime($a['created_at'])) ?></small>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+
+          <!-- EXISTING HARD-CODED STUDENT ANNOUNCEMENTS BELOW -->
+
+          
           <h5 class="mb-3 text-dark">Latest Announcements</h5>
           <ul class="list-group mb-4">
             <li class="list-group-item mb-2">
@@ -183,12 +209,12 @@
               <small class="text-muted">Posted on: 2025-10-17</small>
             </li>
 
+            
             <li class="list-group-item mb-2">
               <h6 class="fw-bold">Midterm Examination Schedule</h6>
               <p>Midterm exams will start on October 20. Please check your email for detailed schedules.</p>
               <small class="text-muted">Posted on: 2025-10-15</small>
             </li>
-
             <li class="list-group-item mb-2">
               <h6 class="fw-bold">System Maintenance</h6>
               <p>The portal will be temporarily unavailable from 10 PM to 12 AM for maintenance.</p>
@@ -196,7 +222,7 @@
             </li>
           </ul>
 
-          <!-- ✅ STUDENT PROFILE -->
+          <!-- STUDENT PROFILE -->
           <h5 class="mb-3 text-dark">My Profile</h5>
           <?php if (!empty($data['profile'])): ?>
             <div class="row g-3">
