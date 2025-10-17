@@ -108,9 +108,10 @@
 
         <?php elseif (($role ?? '') === 'teacher'): ?>
 
+          <!-- ✅ TEACHER DASHBOARD -->
           <h5 class="mb-3 text-dark">My Students</h5>
           <?php if (!empty($data['students'])): ?>
-            <ul class="list-group">
+            <ul class="list-group mb-4">
               <?php foreach ($data['students'] as $s): ?>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                   <span><?= esc($s['name']) ?> (<?= esc($s['email']) ?>)</span>
@@ -122,26 +123,54 @@
             <p class="text-dark">No students to display.</p>
           <?php endif; ?>
 
+          <!-- ✅ TEACHER ANNOUNCEMENTS (DIFFERENT CONTENT) -->
+          <h5 class="mb-3 text-dark">Faculty Announcements</h5>
+          <ul class="list-group mb-4">
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">Faculty Meeting Reminder</h6>
+              <p>All teachers are required to attend the faculty meeting on October 18 at 3 PM in the main conference room.</p>
+              <small class="text-muted">Posted on: 2025-10-16</small>
+            </li>
+
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">Grade Submission Notice</h6>
+              <p>Please submit your students’ midterm grades before October 25 through the faculty portal.</p>
+              <small class="text-muted">Posted on: 2025-10-15</small>
+            </li>
+
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">Teaching Evaluation Schedule</h6>
+              <p>Teacher evaluation forms will be available next week. Please remind your students to complete them.</p>
+              <small class="text-muted">Posted on: 2025-10-14</small>
+            </li>
+          </ul>
+          <!-- ✅ END TEACHER ANNOUNCEMENTS -->
+
 
         <?php else: ?>
 
-          <!-- ✅ INSERTED ANNOUNCEMENTS MODULE HERE -->
+          <!-- ✅ STUDENT ANNOUNCEMENTS -->
           <h5 class="mb-3 text-dark">Latest Announcements</h5>
+          <ul class="list-group mb-4">
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">Welcome to the Student Portal</h6>
+              <p>This is your official student dashboard. Check here regularly for updates.</p>
+              <small class="text-muted">Posted on: 2025-10-17</small>
+            </li>
 
-          <?php if (!empty($announcements)): ?>
-            <ul class="list-group mb-4">
-              <?php foreach ($announcements as $a): ?>
-                <li class="list-group-item mb-2">
-                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
-                  <p><?= esc($a['content']) ?></p>
-                  <small class="text-muted">Posted on: <?= esc($a['created_at']) ?></small>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          <?php else: ?>
-            <p class="text-dark mb-4">No announcements yet.</p>
-          <?php endif; ?>
-          <!-- ✅ END ANNOUNCEMENTS SECTION -->
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">Midterm Examination Schedule</h6>
+              <p>Midterm exams will start on October 20. Please check your email for detailed schedules.</p>
+              <small class="text-muted">Posted on: 2025-10-15</small>
+            </li>
+
+            <li class="list-group-item mb-2">
+              <h6 class="fw-bold">System Maintenance</h6>
+              <p>The portal will be temporarily unavailable from 10 PM to 12 AM for maintenance.</p>
+              <small class="text-muted">Posted on: 2025-10-12</small>
+            </li>
+          </ul>
+          <!-- ✅ END STUDENT ANNOUNCEMENTS -->
 
           <!-- Profile Section -->
           <h5 class="mb-3 text-dark">My Profile</h5>
