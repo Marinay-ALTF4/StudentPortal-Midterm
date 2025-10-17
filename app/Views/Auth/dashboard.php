@@ -1,25 +1,25 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <!-- test commit -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--  Bootstrap 5 CSS -->
+  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-light">
 
-  <!--  Include header template -->
+  <!-- Include header template -->
   <?php include('app/Views/templates/header.php'); ?>
 
-  <!--  Main dashboard container -->
+  <!-- Main dashboard container -->
   <div class="d-flex justify-content-center align-items-start mt-5">
     <div class="card shadow p-4 border border-dark" style="max-width: 800px; width: 100%; background-color: #e9ecef;">
       <div class="card-body">
 
-        <!--  Welcome message -->
+        <!-- Welcome message -->
         <h3 class="card-title mb-4 text-dark">
           Welcome <?= esc($role ?? (session()->get('role') ?? 'User')) ?>!
         </h3>
@@ -61,7 +61,6 @@
               </div>
               <div class="col-md-4">
                 <label for="email" class="form-label">Email or Student ID</label>
-                <!--  changed type from email → text -->
                 <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email or Student ID">
               </div>
               <div class="col-md-4">
@@ -126,6 +125,25 @@
 
         <?php else: ?>
 
+          <!-- ✅ INSERTED ANNOUNCEMENTS MODULE HERE -->
+          <h5 class="mb-3 text-dark">Latest Announcements</h5>
+
+          <?php if (!empty($announcements)): ?>
+            <ul class="list-group mb-4">
+              <?php foreach ($announcements as $a): ?>
+                <li class="list-group-item mb-2">
+                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
+                  <p><?= esc($a['content']) ?></p>
+                  <small class="text-muted">Posted on: <?= esc($a['created_at']) ?></small>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php else: ?>
+            <p class="text-dark mb-4">No announcements yet.</p>
+          <?php endif; ?>
+          <!-- ✅ END ANNOUNCEMENTS SECTION -->
+
+          <!-- Profile Section -->
           <h5 class="mb-3 text-dark">My Profile</h5>
           <?php if (!empty($data['profile'])): ?>
             <div class="row g-3">
@@ -148,7 +166,7 @@
     </div>
   </div>
 
-  <!--  jQuery and Bootstrap JS -->
+  <!-- jQuery and Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
