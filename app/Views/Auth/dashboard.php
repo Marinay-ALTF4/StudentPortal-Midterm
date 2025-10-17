@@ -131,19 +131,8 @@
           <!-- TEACHER DASHBOARD -->
 
           <!-- DYNAMIC ANNOUNCEMENTS -->
-          <?php if (!empty($announcements)): ?>
-            <h5 class="mb-3 text-dark">Announcements from Admin</h5>
-            <ul class="list-group mb-4">
-              <?php foreach ($announcements as $a): ?>
-                <?php if ($a['audience'] !== 'teacher') continue; ?>
-                <li class="list-group-item mb-2">
-                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
-                  <p><?= esc($a['content']) ?></p>
-                  <small class="text-muted">Posted on: <?= date('Y-m-d', strtotime($a['created_at'])) ?></small>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          <?php endif; ?>
+          <h5 class="mb-3 text-dark">Announcements from Admin</h5>
+          <?= view('announcement', ['announcements' => $announcements, 'audience' => 'teacher']) ?>
 
           <h5 class="mb-3 text-dark">My Students</h5>
           <?php if (!empty($data['students'])): ?>
@@ -184,23 +173,10 @@
           <!-- STUDENT DASHBOARD -->
 
           <!-- DYNAMIC ANNOUNCEMENTS -->
-          <?php if (!empty($announcements)): ?>
-            <h5 class="mb-3 text-dark">Announcements from Admin</h5>
-            <ul class="list-group mb-4">
-              <?php foreach ($announcements as $a): ?>
-                <?php if ($a['audience'] !== 'student') continue; ?>
-                <li class="list-group-item mb-2">
-                  <h6 class="fw-bold"><?= esc($a['title']) ?></h6>
-                  <p><?= esc($a['content']) ?></p>
-                  <small class="text-muted">Posted on: <?= date('Y-m-d', strtotime($a['created_at'])) ?></small>
-                </li>
-              <?php endforeach; ?>
-            </ul>
-          <?php endif; ?>
+          <h5 class="mb-3 text-dark">Announcements from Admin</h5>
+          <?= view('announcement', ['announcements' => $announcements, 'audience' => 'student']) ?>
 
           <!-- EXISTING HARD-CODED STUDENT ANNOUNCEMENTS BELOW -->
-
-          
           <h5 class="mb-3 text-dark">Latest Announcements</h5>
           <ul class="list-group mb-4">
             <li class="list-group-item mb-2">
@@ -208,8 +184,6 @@
               <p>This is your official student dashboard. Check here regularly for updates.</p>
               <small class="text-muted">Posted on: 2025-10-17</small>
             </li>
-
-            
             <li class="list-group-item mb-2">
               <h6 class="fw-bold">Midterm Examination Schedule</h6>
               <p>Midterm exams will start on October 20. Please check your email for detailed schedules.</p>

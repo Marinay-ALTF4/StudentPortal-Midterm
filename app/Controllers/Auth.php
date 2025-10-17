@@ -65,7 +65,7 @@ class Auth extends Controller
                     'role'      => $user['role'],
                     'isLoggedIn'=> true
                 ]);
-                $session->setFlashdata('success', 'Welcome ' . $user['name']);
+                
                 return redirect()->to('dashboard');
             }
 
@@ -136,7 +136,7 @@ class Auth extends Controller
             $rules = [
                 'title'    => 'required|min_length[3]',
                 'content'  => 'required|min_length[5]',
-                'audience' => 'required|in_list[student,teacher]'
+                'audience' => 'required|in_list[student,teacher,]'
             ];
 
             if (!$this->validate($rules)) {
