@@ -22,7 +22,11 @@ class CreateAnnouncementsTable extends Migration
             'content' => [
                 'type' => 'TEXT',
             ],
-            // ✅ FIX: allow NULL, no invalid default
+            'audience' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '20', // only student or teacher
+                'null'       => false,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,

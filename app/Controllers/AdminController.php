@@ -1,34 +1,31 @@
 <?php
-
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Models\UserModel;
+use App\Models\AnnouncementModel;
 
 class AdminController extends BaseController
 {
-    public function registerUser()
-{
-    $data = [
-        'fullname' => $this->request->getPost('fullname'),
-        'email'    => $this->request->getPost('email'),
-        'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-        'role'     => $this->request->getPost('role')
-    ];
+    public function postAnnouncement()
+    {
+        $announcementModel = new AnnouncementModel();
 
-    $userModel = new UserModel();
+        $data = [
+            'title'      => $this->request->getPost('title'),
+            'content'    => $this->request->getPost('content'),
+            'audience'   => $this->request->getPost('audience'), // student or teacher
+            'created_at' => date('Y-m-d H:i:s')
+        ];
 
-    //  Check if email or student ID already exists
-    $existingUser = $userModel->where('email', $data['email'])->first();
+        // Validate audience
+        $validAudiences = ['student', 'teacher'];
+        if (!in_array($data['audience'], $validAudiences)) {
+            return redirect()->back()->with('error', 'Invalid audience selected.');
+        }
 
-    if ($existingUser) {
-        // If found, return with error message
-        return redirect()->back()->with('error', 'Email/Student ID already exists!');
+        if ($announcementModel->insert($data)) {
+            return redirect()->back()->with('success', 'Announcement posted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to post announcement.');
+        }
     }
-
-    // Save the user if not duplicate
-    $userModel->save($data);
-
-    return redirect()->back()->with('success', ucfirst($data['role']) . ' registered successfully!');
-}
 }

@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- test commit -->
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -16,7 +15,7 @@
 
   <!-- Main dashboard container -->
   <div class="d-flex justify-content-center align-items-start mt-5">
-    <div class="card shadow p-4 border border-dark" style="max-width: 800px; width: 100%; background-color: #e9ecef;">
+    <div class="card shadow p-4 border border-dark" style="max-width: 850px; width: 100%; background-color: #e9ecef;">
       <div class="card-body">
 
         <!-- Welcome message -->
@@ -34,25 +33,25 @@
 
         <?php if (($role ?? '') === 'admin'): ?>
 
-          <!-- FLASH MESSAGES -->
+          <!-- ✅ FLASH MESSAGES -->
           <?php if(session()->getFlashdata('success')): ?>
             <div class="alert alert-success"><?= session()->getFlashdata('success') ?></div>
           <?php elseif(session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
           <?php endif; ?>
 
-          <!-- ADMIN SECTION -->
+          <!-- ✅ ADMIN OVERVIEW -->
           <h5 class="mb-3 text-dark">Admin Overview</h5>
           <p class="text-dark mb-2">
             Total users:
             <strong><?= isset($data['usersCount']) ? (int) $data['usersCount'] : 0 ?></strong>
           </p>
 
-          <!-- USER MANAGEMENT SECTION -->
           <hr>
+
+          <!-- ✅ USER MANAGEMENT -->
           <h5 class="mb-3 text-dark">User Management</h5>
 
-          <!-- Register New User Form -->
           <form action="<?= base_url('admin/registerUser') ?>" method="post" class="mb-4 border p-3 rounded bg-white">
             <div class="row g-3">
               <div class="col-md-4">
@@ -79,7 +78,34 @@
             <button type="submit" class="btn btn-success mt-3">Register User</button>
           </form>
 
-          <!-- Table of recent users -->
+          <!-- ✅ POST ANNOUNCEMENT -->
+          <hr>
+          <h5 class="mb-3 text-dark">Post Announcement</h5>
+
+          <form action="<?= base_url('admin/postAnnouncement') ?>" method="post" class="mb-4 border p-3 rounded bg-white">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input type="text" name="title" id="title" class="form-control" placeholder="Enter announcement title" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea name="content" id="content" rows="3" class="form-control" placeholder="Write announcement details..." required></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="audience" class="form-label">Audience</label>
+              <select name="audience" id="audience" class="form-select" required>
+                <option value="">Select Audience</option>
+                <option value="teacher">Teachers</option>
+                <option value="student">Students</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Post Announcement</button>
+          </form>
+
+          <!-- ✅ RECENT USERS TABLE -->
           <h5 class="mb-3 text-dark">Recent Users</h5>
           <?php if (!empty($data['recentUsers'])): ?>
             <div class="table-responsive">
@@ -123,7 +149,7 @@
             <p class="text-dark">No students to display.</p>
           <?php endif; ?>
 
-          <!-- ✅ TEACHER ANNOUNCEMENTS (DIFFERENT CONTENT) -->
+          <!-- ✅ TEACHER ANNOUNCEMENTS -->
           <h5 class="mb-3 text-dark">Faculty Announcements</h5>
           <ul class="list-group mb-4">
             <li class="list-group-item mb-2">
@@ -144,12 +170,11 @@
               <small class="text-muted">Posted on: 2025-10-14</small>
             </li>
           </ul>
-          <!-- ✅ END TEACHER ANNOUNCEMENTS -->
 
 
         <?php else: ?>
 
-          <!-- ✅ STUDENT ANNOUNCEMENTS -->
+          <!-- ✅ STUDENT DASHBOARD -->
           <h5 class="mb-3 text-dark">Latest Announcements</h5>
           <ul class="list-group mb-4">
             <li class="list-group-item mb-2">
@@ -170,9 +195,8 @@
               <small class="text-muted">Posted on: 2025-10-12</small>
             </li>
           </ul>
-          <!-- ✅ END STUDENT ANNOUNCEMENTS -->
 
-          <!-- Profile Section -->
+          <!-- ✅ STUDENT PROFILE -->
           <h5 class="mb-3 text-dark">My Profile</h5>
           <?php if (!empty($data['profile'])): ?>
             <div class="row g-3">

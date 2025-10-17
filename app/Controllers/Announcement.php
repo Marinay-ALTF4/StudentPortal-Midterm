@@ -9,14 +9,19 @@ class Announcement extends BaseController
     {
         $model = new AnnouncementModel();
 
-        // Fetch announcements (newest first)
-        $data['announcements'] = $model->orderBy('created_at', 'DESC')->findAll();
+        // Get logged-in user's role (student or teacher)
+        $role = session()->get('role');
 
-        // Also pass role/session info if needed
-        $data['role'] = session()->get('role');
-        $data['name'] = session()->get('name');
+        // Fetch announcements only for this audience
+        $data['announcements'] = $model
+            ->where('audience', $role)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
+
+        $data['role']  = $role;
+        $data['name']  = session()->get('name');
         $data['email'] = session()->get('email');
 
-        return view('dashboard', $data); // <-- your big dashboard file name
+        return view('dashboard', $data);
     }
 }

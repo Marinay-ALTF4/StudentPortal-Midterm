@@ -31,6 +31,7 @@ use CodeIgniter\Router\RouteCollection;
         $routes->get('/studentCourse', 'Auth::studentCourse');
 
         // User Management
-        $routes->post('admin/registerUser', 'AdminController::registerUser');
+        $routes->post('admin/postAnnouncement', 'AdminController::postAnnouncement');
+
 
 
